@@ -1,0 +1,9 @@
+at start pump, enter current meter reading
+as verified by member xxxxxx
+
+stop pump -> popup with "enter current meter reading"
+"okay" calculate bill
+
+print receipt
+
+
