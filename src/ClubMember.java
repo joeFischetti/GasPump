@@ -223,6 +223,8 @@ public class ClubMember{
 				phone + ", " +
 				memberSince);
 	}
+	
+	
 	//Check password method against password supplied
 	//
 	public boolean checkPass(String password){
@@ -232,7 +234,7 @@ public class ClubMember{
 		}
 		
 		catch(Exception e){
-			System.out.println("issues");
+			System.out.println(e);
 			return false;
 		}
 	}

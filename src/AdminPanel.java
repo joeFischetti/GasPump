@@ -1,8 +1,7 @@
-//------------------------------------------------------------------------------
-//This is the admin panel.  The admin panel gives the admins a way to view
-//	modify, add members, as well as change gas pricing
-//
-//------------------------------------------------------------------------------
+/**
+ * AdminPanel
+ * @author Joe Fischetti
+ */
 
 
 import java.awt.event.ActionListener;
@@ -21,26 +20,36 @@ import java.text.DecimalFormat;
 public class AdminPanel extends JPanel {
 	private static final long serialVersionUID = 002;
 	
-	
+	//adminMemberList is used for the member list drop down, and the string[] and model
+	//	are used for the combobox
 	private JComboBox<String> adminMemberList;
-
-	private JTextField councilMemberPrice, lifeMemberPrice, memberPrice, guestPrice;
-	private Font defaultFont;
 	private String[] dropDownList;
 	private DefaultComboBoxModel<String> dropDownModel;
+	
+	//JTextFields for each of the gas prices on the modify gas price panel
+	private JTextField councilMemberPrice, lifeMemberPrice, memberPrice, guestPrice;
+	
+	//Default font used for formatting purposes (passed from main)
+	private Font defaultFont;
+	
+	//Current member being worked with
 	private ClubMember currentAdminMember;
 	
+	//Various panels used to display/work with certain information.  trp = transaction reports,
+	//	drp = disparity reports.  The rest are MemberInfoPanels that show and/or allow certain fields
+	//	to be modified.
 	JPanel mainPanelCenter;
 	JPanel pricingInfoPanel;
-	
-	private JButton btnReturn, btnSubmit, btnTransactionReports, btnDisparityReports,
-					btnAddUser, btnDeleteUser, btnModifyUser, btnPricingLevels;
 	private AdminReportsPanel trp;
 	private DisparityReportPanel drp;
-	private MemberInfoPanel addMemberPanel, deleteMemberPanel, modifyMemberPanel;
+	private MemberInfoPanel addMemberPanel, deleteMemberPanel, modifyMemberPanel;	
+	
+	
+	//Each of the buttons that appear in the panel
+	private JButton btnReturn, btnSubmit, btnTransactionReports, btnDisparityReports,
+					btnAddUser, btnDeleteUser, btnModifyUser, btnPricingLevels;
 	
 	//Static strings used for cardlayout names
-	//
 	private static String CREATEUSER = "Create User";  //Panel 0
 	private static String DELETEUSER = 	"Delete User";  //Panel 1
 	private static String MODIFYUSER = "Modify User";  //Panel 2
@@ -48,10 +57,21 @@ public class AdminPanel extends JPanel {
 	private static String TRANSACTIONREPORT = "Transaction Report";  //Panel 4
 	private static String DISPARITYREPORT = "Disparity Report";  //Panel 5
 	
+	
+	//currentPanel is used for tracking the current panel that's displayed
 	private int currentPanel;
 	
+	//DecimalFormat used for showing money $X.XX
 	private DecimalFormat money;
 	
+	
+	/**
+	 * This is the constructor for for the AdminPanel which displays each of the different
+	 * 	panels used for admin purposes.
+	 * 
+	 * @param specifiedFont	The default font that will be used throughout the panels
+	 * @param dropDown	The array of member names that will be used for the drop downs
+	 */
 	public AdminPanel(Font specifiedFont, String[] dropDown) {
 		super();
 		defaultFont = specifiedFont;

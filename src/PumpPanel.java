@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 public class PumpPanel extends JPanel {
-	private static final long serialVersionUID = 004;
+	private static final long serialVersionUID = 034;
 	
 	private JComboBox<String> memberList;
 	private ClubMember currentUser;

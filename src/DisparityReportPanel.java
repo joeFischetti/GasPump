@@ -18,7 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
 public class DisparityReportPanel extends JPanel {
-	private static final long serialVersionUID = 004;
+	private static final long serialVersionUID = 005;
 	
 	private JComboBox<String> monthSelection,
 				dateSelection, yearSelection;
