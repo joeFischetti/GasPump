@@ -42,12 +42,12 @@ public class AdminPanel extends JPanel {
 	JPanel pricingInfoPanel;
 	private AdminReportsPanel trp;
 	private DisparityReportPanel drp;
-	private MemberInfoPanel addMemberPanel, deleteMemberPanel, modifyMemberPanel;	
+	private MemberInfoPanel addMemberPanel, deleteMemberPanel, modifyMemberPanel, passwordResetPanel;	
 	
 	
 	//Each of the buttons that appear in the panel
 	private JButton btnReturn, btnSubmit, btnTransactionReports, btnDisparityReports,
-					btnAddUser, btnDeleteUser, btnModifyUser, btnPricingLevels;
+					btnAddUser, btnDeleteUser, btnModifyUser, btnShowPasswordReset, btnPricingLevels;
 	
 	//Static strings used for cardlayout names
 	private static String CREATEUSER = "Create User";  //Panel 0
@@ -56,6 +56,7 @@ public class AdminPanel extends JPanel {
 	private static String PRICINGLEVELS = "Pricing Levels";  //Panel 3
 	private static String TRANSACTIONREPORT = "Transaction Report";  //Panel 4
 	private static String DISPARITYREPORT = "Disparity Report";  //Panel 5
+	private static String PASSWORDRESET = "Reset Member Password"; //Panel 6
 	
 	
 	//currentPanel is used for tracking the current panel that's displayed
@@ -122,6 +123,10 @@ public class AdminPanel extends JPanel {
 		modifyMemberPanel.enableEntryFields(false);
 		modifyMemberPanel.enableDropList(true);
 		
+		passwordResetPanel = new MemberInfoPanel(defaultFont, dropDownList, "Reset Member Password");
+		passwordResetPanel.enableEntryFields(false);
+		passwordResetPanel.enableDropList(true);
+		
 		trp = new AdminReportsPanel(defaultFont, dropDownList);
 		drp = new DisparityReportPanel(defaultFont);
 		
@@ -132,6 +137,7 @@ public class AdminPanel extends JPanel {
 		mainPanelCenter.add(trp, TRANSACTIONREPORT);
 		mainPanelCenter.add(drp, DISPARITYREPORT);
 		mainPanelCenter.add(pricingInfoPanel, PRICINGLEVELS);
+		mainPanelCenter.add(passwordResetPanel, PASSWORDRESET);
 			
 		JLabel lblOptionSelect = new JLabel("Select admin options:  ");
 		lblOptionSelect.setFont(defaultFont);
@@ -203,14 +209,18 @@ public class AdminPanel extends JPanel {
 		
 		btnPricingLevels = new JButton("Modify Pricing Levels");
 		btnPricingLevels.setFont(defaultFont);
+		
+		btnShowPasswordReset = new JButton("Reset Member Password");
+		btnShowPasswordReset.setFont(defaultFont);
 			
-		JPanel buttonPanel = new JPanel(new GridLayout(7,1));
+		JPanel buttonPanel = new JPanel(new GridLayout(8,1));
 		buttonPanel.add(btnSubmit);
 		buttonPanel.add(btnTransactionReports);
 		buttonPanel.add(btnDisparityReports);
 		buttonPanel.add(btnAddUser);
 		buttonPanel.add(btnDeleteUser);
 		buttonPanel.add(btnModifyUser);
+		buttonPanel.add(btnShowPasswordReset);
 		buttonPanel.add(btnPricingLevels);
 		
 		add(btnReturn, BorderLayout.NORTH);
@@ -261,6 +271,10 @@ public class AdminPanel extends JPanel {
 		btnModifyUser.addActionListener(mual);
 	}
 	
+	public void showPasswordResetActionListener(ActionListener spral){
+		btnShowPasswordReset.addActionListener(spral);
+	}
+	
 	public void queryTransactionActionListener(ActionListener qtal){
 		trp.submitActionListener(qtal);
 	}
@@ -287,6 +301,10 @@ public class AdminPanel extends JPanel {
 	
 	public void deleteMemberListActionListener(ActionListener dmal){
 		deleteMemberPanel.memberListActionListener(dmal);
+	}
+	
+	public void passwordResetListActionListener(ActionListener prlal){
+		passwordResetPanel.memberListActionListener(prlal);
 	}
 	
 	
@@ -355,6 +373,8 @@ public class AdminPanel extends JPanel {
 			case 2: return modifyMemberPanel.getSelectedName();
 					
 			case 4:	return trp.getSelectedMember();
+			
+			case 6: return passwordResetPanel.getSelectedName();
 				
 			default: return new String("No User Selected");
 		}
@@ -367,6 +387,8 @@ public class AdminPanel extends JPanel {
 			case 1:	return deleteMemberPanel.getSelectedIndex();
 				
 			case 2: return modifyMemberPanel.getSelectedIndex();
+			
+			case 6: return passwordResetPanel.getSelectedIndex();
 			
 			default: return 0;
 		}
@@ -537,6 +559,12 @@ public class AdminPanel extends JPanel {
 		currentPanel = 2;
 	}
 	
+	public void showPasswordResetPanel(){
+		CardLayout cl = (CardLayout)(mainPanelCenter.getLayout());
+		cl.show(mainPanelCenter, PASSWORDRESET);
+		currentPanel = 6;
+	}
+	
 	public void showPricingPanel(){
 		CardLayout cl = (CardLayout)(mainPanelCenter.getLayout());
 		cl.show(mainPanelCenter, PRICINGLEVELS);
@@ -601,6 +629,23 @@ public class AdminPanel extends JPanel {
 		modifyMemberPanel.setMemberSinceField(getSelectedMember().getMemberSince());
 		
 		modifyMemberPanel.enableEntryFields(true);
+	}
+
+	
+	public void updatePasswordResetPanel(){
+		passwordResetPanel.setFirstNameFieldText(getSelectedMember().getFirstName());
+		passwordResetPanel.setLastNameFieldText(getSelectedMember().getLastName());
+		passwordResetPanel.setSpouseNameField(getSelectedMember().getSpouse());
+		passwordResetPanel.setAddressField(getSelectedMember().getAddress());
+		passwordResetPanel.setCityField(getSelectedMember().getCity());
+		passwordResetPanel.setStateField(getSelectedMember().getState());
+		passwordResetPanel.setZipField(getSelectedMember().getZip());
+		passwordResetPanel.setPhoneField(getSelectedMember().getPhone());
+		passwordResetPanel.setEmailField(getSelectedMember().getEmail());
+		passwordResetPanel.setMemberStatus(getSelectedMember().getStatus());
+		passwordResetPanel.setMemberSinceField(getSelectedMember().getMemberSince());
+		
+		passwordResetPanel.enableEntryFields(false);
 	}
 	
 	public void clearModifyPanel(){

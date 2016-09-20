@@ -128,6 +128,8 @@ public class MainWindow extends JFrame{
 		adminPanel.editPricingActionListener(new ShowPricingPanelButton());
 		adminPanel.modifyMemberListActionListener(new ModifyUserDropDown());
 		adminPanel.deleteMemberListActionListener(new DeleteUserDropDown());
+		adminPanel.showPasswordResetActionListener(new ShowPasswordResetPanelButton());
+		adminPanel.passwordResetListActionListener(new PasswordResetDropDown());
 		
 		
 		//Create the pump panel, passing to it the default font,
@@ -1172,10 +1174,14 @@ public class MainWindow extends JFrame{
 								}
 								break;
 					
-					case 4:		displayError("No chances entered");
+					case 4:		displayError("No changes entered");
 								break;
 								
-					case 5:		displayError("No chances entered");
+					case 5:		displayError("No changes entered");
+								break;
+					
+					case 6:		if(confirmDBUpdate("Reset member password for " + adminPanel.getSelectedMember().getFullName()))
+									resetPassword();
 								break;
 					
 				}
@@ -1240,6 +1246,14 @@ public class MainWindow extends JFrame{
 		}
 	}
 	
+	
+	//Show reset member password panel
+	//
+	class ShowPasswordResetPanelButton implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			adminPanel.showPasswordResetPanel();
+		}
+	}
 	
 	class ShowPricingPanelButton implements ActionListener{
 		public void actionPerformed(ActionEvent e){
@@ -1517,6 +1531,16 @@ public class MainWindow extends JFrame{
 			
 			adminPanel.setCurrentMember(loadFullMember(adminPanel.getSelectedMember()));
 			adminPanel.updateDeletePanel();
+		}
+	}
+	
+	
+	class PasswordResetDropDown implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			setAdminPanelMember();
+			
+			adminPanel.setCurrentMember(loadFullMember(adminPanel.getSelectedMember()));
+			adminPanel.updatePasswordResetPanel();
 		}
 	}
 	
