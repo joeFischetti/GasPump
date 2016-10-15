@@ -14,8 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import java.text.MessageFormat;
 
 public class DisparityReportPanel extends JPanel {
 	private static final long serialVersionUID = 005;
@@ -157,7 +161,14 @@ public class DisparityReportPanel extends JPanel {
 	
 	public void printReport(){
 		try{
-			responseTable.print();
+			
+			MessageFormat header = new MessageFormat(" ");
+			MessageFormat footer = new MessageFormat(" ");
+			
+			PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+	        set.add(OrientationRequested.LANDSCAPE);
+			
+			responseTable.print(JTable.PrintMode.FIT_WIDTH, header, footer, false, set, false);
 			
 		}
 		catch(Exception e){

@@ -7,6 +7,10 @@
 
 import jssc.*;
 import java.awt.CardLayout;
+
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -25,6 +29,9 @@ import javax.swing.JOptionPane;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.math.BigDecimal;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.text.MessageFormat;
 
 
 
@@ -83,7 +90,7 @@ public class MainWindow extends JFrame{
 		
 		//Init the serial port for the pump
 		//
-		pumpRelay = new SerialPort("/dev/ttyUSB0");
+		pumpRelay = new SerialPort("COM3");
 		
 		
 		//Set default font
@@ -164,7 +171,6 @@ public class MainWindow extends JFrame{
 		//	make it visible
 		//
 		add(pumpApplication);
-		setVisible(true);
 		
 		money = new DecimalFormat("$#.##");
 		money.setMinimumFractionDigits(2);
@@ -173,6 +179,12 @@ public class MainWindow extends JFrame{
 		meter = new DecimalFormat("#.#");
 		meter.setParseBigDecimal(true);
 		
+		GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice gDev = gEnv.getDefaultScreenDevice();
+		
+		setResizable(false);
+		setUndecorated(true);
+		gDev.setFullScreenWindow(this);
 	}
 
 
@@ -502,8 +514,8 @@ public class MainWindow extends JFrame{
 				
 				//display popup
 				//
-				createNewPassOption = JOptionPane.showOptionDialog(pumpPanel,  defaultPassPopup,  "Reset password",
-					JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+				createNewPassOption = JOptionPane.showInternalOptionDialog(getContentPane(),  defaultPassPopup,  "Reset password",
+					JOptionPane.NO_OPTION, JOptionPane.WARNING_MESSAGE,
 					null, createNewPassOptions, createNewPassOptions[0]);
 				
 				
@@ -579,8 +591,8 @@ public class MainWindow extends JFrame{
 			popup.add(passwordEntry);
 				
 			String[] options = new String[]{"Ok", "Cancel"};
-				
-			int option = JOptionPane.showOptionDialog(pumpPanel, popup, "Enter your password",
+			
+			int option = JOptionPane.showInternalOptionDialog(getContentPane(), popup, "Enter your password",
 											JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 											null, options, options[0]);
 			if(option == 0)
@@ -609,7 +621,7 @@ public class MainWindow extends JFrame{
 				
 		String[] options = new String[]{"Ok", "Cancel"};
 				
-		int option = JOptionPane.showOptionDialog(getContentPane(), popup, "Enter admin password",
+		int option = JOptionPane.showInternalOptionDialog(getContentPane(), popup, "Enter admin password",
 											JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 											null, options, options[0]);
 		
@@ -828,7 +840,7 @@ public class MainWindow extends JFrame{
 				
 		String[] options = new String[]{"Ok"};
 				
-		JOptionPane.showOptionDialog(getContentPane(), popup, "Error",
+		JOptionPane.showInternalOptionDialog(getContentPane(), popup, "Error",
 			JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 			null, options, options[0]);
 	}
@@ -845,7 +857,7 @@ public class MainWindow extends JFrame{
 				
 		String[] options = new String[]{"Ok", "Cancel"};
 				
-		int option = JOptionPane.showOptionDialog(getContentPane(), popup, input,
+		int option = JOptionPane.showInternalOptionDialog(getContentPane(), popup, input,
 			JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 			null, options, options[0]);
 		
@@ -917,7 +929,13 @@ public class MainWindow extends JFrame{
 					+ "\n		Total Due:  " + rs.getString("price_paid"));
 			}
 			
-			receipt.print();
+			MessageFormat header = new MessageFormat(" ");
+			MessageFormat footer = new MessageFormat(" ");
+			
+			PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+	        set.add(OrientationRequested.LANDSCAPE);
+			
+			receipt.print(header, footer, false, null, set, false);
 			
 			rs.close();
 			stmt.close();
@@ -957,12 +975,13 @@ public class MainWindow extends JFrame{
 			ResultSet rs = stmt.executeQuery(
 				"SELECT member_id, pump_end FROM transactions WHERE trans_num = (SELECT MAX(trans_num) FROM transactions);");
 			
+						
 			stmt.executeUpdate(
 				"INSERT INTO meter_disparity (date, time, expected_reading, actual_reading, expected_member, actual_member) VALUES ('"
 				+ new SimpleDateFormat("MM/dd/yyyy").format(new Date()) + "', '"
 				+ new SimpleDateFormat("HH:mm:ss").format(new Date()) + "', '"
 				+ rs.getString("pump_end") + "', '"
-				+ meter.format(meterReading) + "', '"
+				+ meter.format((BigDecimal)meter.parse(meterReading)) + "', '"
 				+ rs.getString("member_id") + "', '"
 				+ currentMember.getID() + "');");
 	
@@ -1085,7 +1104,9 @@ public class MainWindow extends JFrame{
 	//
 	class CloseProgramButton implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			System.exit(0);
+			if(promptForAdminPassword()){
+				System.exit(0);
+			}
 		}
 	}
 	
@@ -1553,126 +1574,16 @@ public class MainWindow extends JFrame{
 	//	pump reading).  If the pump values were different, 
 	//	save a database entry with the two transaction codes
 	//
-	
-	//PUMP START WITH SERIAL CONNECTION-----------------------------------------------------------
-	/*
 	class StartPumpButton implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			
 			String pumpStartingValue;
 			boolean checkInput = false;
-			
+				
 			try{
-				//Turn on the pump
-				//
-				pumpRelay.openPort();
-				
-				
-				//Create a new transaction
-				//	Date = current date
-				//	Time = current time
-				//	memberID = current member on pump page
-				//	price = current member's rate
-				//
-				pumpGas = new Transaction();
-				pumpGas.setDate(new SimpleDateFormat("MM/dd/yyyy").format(new Date()));
-				pumpGas.setTime(new SimpleDateFormat("HH:mm:ss").format(new Date()));
-				pumpGas.setMemberID(pumpPanel.getSelectedMember().getID());
-				pumpGas.setPrice(String.valueOf(pumpPanel.getSelectedMember().getPrice()));
-				
-				
-				//Check what the current meter reading should
-				//	be
-				//
-				pumpStartingValue = queryForPumpReading();
-				
-				
-				//String array for the popup window
-				//
-				String[] options = new String[]{"Yes", "No"};
-				
-				
-				//Popup window.  Prompts user for the current
-				//	meter reading.  Asks the user
-				//	if the current actual reading matches
-				//	the reading from the last time the
-				//	pump was used
-				//
-				int option = JOptionPane.showOptionDialog(getContentPane(), 
-					"The current meter reading should be " +
-					pumpStartingValue + ".  Is this correct?",
-					"Confirm Meter", JOptionPane.NO_OPTION,
-					JOptionPane.PLAIN_MESSAGE,
-					null, options, options[0]);
-				
-				
-				
-				
-				//If the user said the meter reading was incorrect
-				//	ask them to answer the correct reading
-				//	and then log the error in the database
-				//
-				if(option == 1){
-					String expectedMeterReading = new String(pumpStartingValue);
-					
-					do{
-						pumpStartingValue = (String)JOptionPane.showInputDialog(
-							getContentPane(),
-							"Please enter the meter reading",
-							"Confirm Meter",
-							JOptionPane.PLAIN_MESSAGE,
-							null,
-							null,
-							pumpStartingValue);
-						
-						
-						//Make sure the input is a valid float
-						//
-						try{
-							Float.parseFloat(pumpStartingValue);
-							checkInput = true;
-						}
-						
-						//if the input was not a valid float, set the
-						//	boolean to false so the prompt
-						//	comes up again
-						//
-						catch(NumberFormatException nfe)
-						{
-							checkInput = false;
-						}
-						
-					}while(!checkInput);
-					
-						
-					logMeterDisparity(pumpStartingValue, pumpPanel.getSelectedMember());
-				}
-				
-				
-				//Set the transaction's pump starting value
-				//
-				pumpGas.setPumpStart(pumpStartingValue);				
-			}
-			
-			//Print an error message to the console if
-			//	if there's a serial error
+			//Turn on the pump
 			//
-			catch(SerialPortException ex){
-				System.out.println(ex);
-			}
-		}
-	}
-	*/
-	//DISABLED FOR TESTING PURPOSES--------------------------------------------------------
-	
-	//Pump Start with no serial connection for troubleshooting
-	//
-	class StartPumpButton implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			
-			String pumpStartingValue;
-			boolean checkInput = false;
-				
+			pumpRelay.openPort();
 				
 			//Create a new transaction
 			//	Date = current date
@@ -1704,7 +1615,7 @@ public class MainWindow extends JFrame{
 			//	the reading from the last time the
 			//	pump was used
 			//
-			int option = JOptionPane.showOptionDialog(getContentPane(), 
+			int option = JOptionPane.showInternalOptionDialog(getContentPane(), 
 				"The current meter reading should be " +
 				pumpStartingValue + ".  Is this correct?",
 				"Confirm Meter", JOptionPane.NO_OPTION,
@@ -1714,137 +1625,69 @@ public class MainWindow extends JFrame{
 				
 				
 				
-			//If the user said the meter reading was incorrect
-			//	ask them to answer the correct reading
-			//	and then log the error in the database
-			//
-			if(option == 1){
-					
-				do{
-					pumpStartingValue = (String)JOptionPane.showInputDialog(
-						getContentPane(),
-						"Please enter the meter reading",
-						"Confirm Meter",
-						JOptionPane.PLAIN_MESSAGE,
-						null,
-						null,
-						pumpStartingValue);
-						
-						
-					//Make sure the input is a valid float
-					//
-					try{
-						Float.parseFloat(pumpStartingValue);
-						checkInput = true;
-					}
-					
-					//if the input was not a valid float, set the
-					//	boolean to false so the prompt
-					//	comes up again
-					//
-					catch(NumberFormatException nfe)
-					{
-						checkInput = false;
-					}
-					
-				}while(!checkInput);
-					
-						
-				logMeterDisparity(pumpStartingValue, pumpPanel.getSelectedMember());
-			}
-				
-				
-			//Set the transaction's pump starting value
-			//
-			pumpGas.setPumpStart(pumpStartingValue);				
-		}
-	}
-	
-	
-	//PUMP STOP WITH SERIAL CONNECTION---------------------------------------------------------
-	/*
-	class StopPumpButton implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			try{
-				//Turn off the pump
+				//If the user said the meter reading was incorrect
+				//	ask them to answer the correct reading
+				//	and then log the error in the database
 				//
-				pumpRelay.closePort();
-				
-				String pumpEndingValue = Integer.toString(-1);
-				
-				//While ending value is less than the starting value
-				//
-				while(Float.parseFloat(pumpEndingValue) < Float.parseFloat(pumpGas.getPumpStart())){
+				if(option == 1){
 					
-					//Prompt user for current meter reading
-					//
-					pumpEndingValue = (String)JOptionPane.showInputDialog(
+					do{
+						
+						
+						pumpStartingValue = JOptionPane.showInternalInputDialog(
 							getContentPane(),
 							"Please enter the meter reading",
 							"Confirm Meter",
 							JOptionPane.PLAIN_MESSAGE,
 							null,
 							null,
-							pumpGas.getPumpStart());
+							pumpStartingValue).toString();
+						
+						//Make sure the input is a valid float
+						//
+						try{
+							Float.parseFloat(pumpStartingValue);
+							checkInput = true;
+						}
 					
-					//Make sure the entered value is a valid float
-					//	and if not (exception is thrown)
-					//	then set it to -1 so the prompt comes
-					//	up again
-					//
-					try{
-						Float.parseFloat(pumpEndingValue);
-					}
+						//if the input was not a valid float, set the
+						//	boolean to false so the prompt
+						//	comes up again
+						//
+						catch(NumberFormatException nfe)
+						{
+							checkInput = false;
+						}
+						
 					
-					catch(NumberFormatException nfe){
-						pumpEndingValue = "-1";
-					}
+					}while(!checkInput);
 					
+					
+					logMeterDisparity(pumpStartingValue, pumpPanel.getSelectedMember());
 				}
 				
-				//Set the transaction details
-				//	Pump ending value, number of gallons
-				//	pumped, and total price paid
+				//Set the transaction's pump starting value
 				//
-				pumpGas.setPumpEnd(pumpEndingValue);				
-				pumpGas.setNumGallons();			
-				pumpGas.setPricePaid();
-					
-				
-				//Store the transaction in the database
-				//
-				storeTransaction(pumpGas);
-				
-				
-				//Display the amount due
-				//
-				JOptionPane.showMessageDialog(getContentPane(), new String("Number of gallons pumped: " +
-					pumpGas.getNumberGallons() + "\n" +
-					"Your total amount due: " + 
-					pumpGas.getTransactionTotal()));
-				
-				
-				//Update the pump panel display
-				//
-				pumpPanel.setGallonsPumped(pumpGas.getNumberGallons());
-				pumpPanel.setTotalPrice(pumpGas.getTransactionTotal());
-				
-			}
+				pumpGas.setPumpStart(pumpStartingValue);
 			
-			catch(SerialPortException ex){
-				System.out.println(ex);
+			}
+		
+			catch(SerialPortException serialException){
+				System.out.println(serialException);
 			}
 		}
 	}
-	*/
-	//DISABLED FOR TESTING PURPOSES---------------------------------------------------------
+
 	
-	
-	//Pump Stop with no serial connection for troubleshooting
-	//
+	//Pump Stop
 	class StopPumpButton implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 				
+			try{
+				//Turn off the pump
+				//
+				pumpRelay.closePort();
+			
 				String pumpEndingValue = Integer.toString(-1);
 				
 				//While ending value is less than the starting value
@@ -1853,14 +1696,14 @@ public class MainWindow extends JFrame{
 					
 					//Prompt user for current meter reading
 					//
-					pumpEndingValue = (String)JOptionPane.showInputDialog(
+					pumpEndingValue = JOptionPane.showInternalInputDialog(
 							getContentPane(),
 							"Please enter the meter reading",
 							"Confirm Meter",
 							JOptionPane.PLAIN_MESSAGE,
 							null,
 							null,
-							pumpGas.getPumpStart());
+							pumpGas.getPumpStart()).toString();
 					
 					//Make sure the entered value is a valid float
 					//	and if not (exception is thrown)
@@ -1893,20 +1736,24 @@ public class MainWindow extends JFrame{
 				
 				//Display the amount due
 				//
-				JOptionPane.showMessageDialog(getContentPane(), new String("Number of gallons pumped: " +
+				JOptionPane.showInternalMessageDialog(getContentPane(), new String("Number of gallons pumped: " +
 					pumpGas.getNumberGallons() + "\n" +
 					"Your total amount due: " + 
-					pumpGas.getTransactionTotal()));
+					money.format(pumpGas.getTransactionTotal())));
 				
 				
 				//Update the pump panel display
 				//
 				pumpPanel.setGallonsPumped(pumpGas.getNumberGallons().toString());
 				pumpPanel.setTotalPrice(money.format(pumpGas.getTransactionTotal()));
+			}
+			
+			catch(SerialPortException serialException){
+				System.out.println(serialException);
+			}
 				
 		}
 	}
-	
 	
 	//Connect to the pump with membership credentials
 	//

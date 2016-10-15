@@ -7,7 +7,11 @@
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 import java.awt.Font;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -180,7 +184,14 @@ public class AdminReportsPanel extends JPanel {
 	
 	public void printReport(){
 		try{
-			responseTable.print();
+			
+			MessageFormat header = new MessageFormat(" ");
+			MessageFormat footer = new MessageFormat(" ");
+			
+			PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+	        set.add(OrientationRequested.LANDSCAPE);
+			
+			responseTable.print(JTable.PrintMode.FIT_WIDTH, header, footer, false, null, false);
 			
 		}
 		catch(Exception e){
