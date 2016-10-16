@@ -57,7 +57,7 @@ public class MainWindow extends JFrame{
 	private static String MAINMENU = "Main Menu";
 	private static String ADMINPANEL = "Administrator View";
 	private static String GASPUMPPANEL = "Gas Pump";
-	private static String ADMINPASSWORD = "26ferry";
+	private static String ADMINPASSWORD = "admin";
 	private static String SELECTMEMBERPANEL = "Select Member";
 	
 	
