@@ -57,7 +57,7 @@ public class MainWindow extends JFrame{
 	private static String MAINMENU = "Main Menu";
 	private static String ADMINPANEL = "Administrator View";
 	private static String GASPUMPPANEL = "Gas Pump";
-	private static String ADMINPASSWORD = "admin";
+	private static String ADMINPASSWORD = "26ferry";
 	private static String SELECTMEMBERPANEL = "Select Member";
 	
 	
@@ -821,6 +821,8 @@ public class MainWindow extends JFrame{
 		pumpPanel.setPhoneField(pumpPanel.getSelectedMember().getPhone());
 		pumpPanel.setEmailField(pumpPanel.getSelectedMember().getEmail());
 		pumpPanel.setMemberSinceField(pumpPanel.getSelectedMember().getMemberSince());
+		pumpPanel.setGallonsPumped(new String());
+		pumpPanel.setTotalPrice(new String());
 	}
 	
 	
@@ -1063,9 +1065,9 @@ public class MainWindow extends JFrame{
 										
 		case "Member":					return 2;
 										
-		case "Probation":				return 3;
+		case "Guest":				return 3;
 										
-		default:	displayError("Didn't select member type, adding as 'probation'");
+		default:	displayError("Didn't select member type, adding as 'Guest'");
 								return 3;
 			
 		}

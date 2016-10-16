@@ -50,7 +50,7 @@ public class SelectMemberPanel extends JPanel{
 		
 		//Init each component
 		//
-		btnConnectWithLogin = new JButton("Connect (WITH LOGIN)");	
+		btnConnectWithLogin = new JButton("Login");	
 		btnConnectWithLogin.setFont(defaultFont);
 		
 		btnConnectAsGuest = new JButton("Connect (AS GUEST)");
@@ -79,7 +79,7 @@ public class SelectMemberPanel extends JPanel{
 		selectMemberPanel.add(enterID);
 		selectMemberPanel.add(memberNumber);
 		loginButtonPanel.add(btnConnectWithLogin);
-		loginButtonPanel.add(btnConnectAsGuest);
+		//loginButtonPanel.add(btnConnectAsGuest);
 		
 		bodyPanel.add(selectMemberPanel);
 		bodyPanel.add(loginButtonPanel);
