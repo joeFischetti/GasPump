@@ -189,7 +189,7 @@ public class AdminReportsPanel extends JPanel {
 			MessageFormat footer = new MessageFormat(" ");
 			
 			PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
-	        set.add(OrientationRequested.LANDSCAPE);
+	        set.add(OrientationRequested.PORTRAIT);
 			
 			responseTable.print(JTable.PrintMode.FIT_WIDTH, header, footer, false, null, false);
 			
