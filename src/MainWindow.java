@@ -935,7 +935,7 @@ public class MainWindow extends JFrame{
 			MessageFormat footer = new MessageFormat(" ");
 			
 			PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
-	        set.add(OrientationRequested.LANDSCAPE);
+	        set.add(OrientationRequested.PORTRAIT);
 			
 			receipt.print(header, footer, false, null, set, false);
 			
