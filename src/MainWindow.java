@@ -1061,7 +1061,7 @@ public class MainWindow extends JFrame{
 		switch(memberType){
 		case "Mohawk Council Member":	return 1;
 										
-		case "Club Member":				return 4;
+		case "Club":				return 4;
 										
 		case "Member":					return 2;
 										

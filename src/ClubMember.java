@@ -144,7 +144,7 @@ public class ClubMember{
 	
 	public String getStatus(){
 		if(memberStatus.equals("Life Member"))
-			return "Club Member";
+			return "Club";
 		else
 			return memberStatus;
 	}
