@@ -143,7 +143,10 @@ public class ClubMember{
 	}
 	
 	public String getStatus(){
-		return memberStatus;
+		if(memberStatus.equals("Life Member"))
+			return "Club Member";
+		else
+			return memberStatus;
 	}
 	
 	public String getMemberSince(){

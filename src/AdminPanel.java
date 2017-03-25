@@ -167,7 +167,7 @@ public class AdminPanel extends JPanel {
 		
 		pricingInfoPanel.add(councilMemberPrice);
 		
-		JLabel lblLifeMember = new JLabel("Life Member:  ");
+		JLabel lblLifeMember = new JLabel("Club Member:  ");
 		lblLifeMember.setFont(defaultFont);
 		pricingInfoPanel.add(lblLifeMember);
 		

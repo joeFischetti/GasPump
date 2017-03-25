@@ -209,7 +209,7 @@ public class MemberInfoPanel extends JPanel {
 		//Create the drop down list for the member status
 		memberStatusList = new JComboBox<String>();
 		memberStatusList.setFont(defaultFont);
-		memberStatusList.setModel(new DefaultComboBoxModel<String>(new String[] {"Member Type", "Mohawk Council Member", "Member", "Guest", "Life Member"}));
+		memberStatusList.setModel(new DefaultComboBoxModel<String>(new String[] {"Member Type", "Mohawk Council Member", "Member", "Guest", "Club Member"}));
 		memberStatusList.setMaximumRowCount(3);
 		userInfoPanel.add(memberStatusList);
 					
