@@ -15,125 +15,136 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.DefaultComboBoxModel;
 
 public class PumpPanel extends JPanel {
 	private static final long serialVersionUID = 034;
-	
-	private JComboBox<String> memberList;
+
+	private JComboBox<String> memberList, memberStatusList;
 	private ClubMember currentUser;
+	private DefaultComboBoxModel<String> memberStatusModel;
 
 	private Font defaultFont;
-	
-	private JLabel memberNumberLabel, nameLabel, addressLabel, 
-			cityLabel, stateLabel, zipLabel, phoneLabel,
-			emailLabel, memberSinceLabel, gasPumpedLabel, 
-			perGalLabel, totalPriceLabel;
-	
-	private JTextField txtMemberNumber, txtFullName, txtAddress, 
-			txtCity, txtState, txtZip, txtPhone, 
-			txtEmail, txtMemberSince, txtGasPumped, 
-			txtPerGal, txtTotalPrice, txtMemberStatusField;
-			
-	private JButton btnStartPump, btnStopPump, btnReturn;	
 
-	
+	private JLabel memberNumberLabel, nameLabel, addressLabel,
+			cityLabel, stateLabel, zipLabel, phoneLabel,
+			emailLabel, memberSinceLabel, gasPumpedLabel,
+			perGalLabel, totalPriceLabel, memberStatusLabel;
+
+	private JTextField txtMemberNumber, txtFullName, txtAddress,
+			txtCity, txtState, txtZip, txtPhone,
+			txtEmail, txtMemberSince, txtGasPumped,
+			txtPerGal, txtTotalPrice, txtMemberStatusField;
+
+	private JButton btnStartPump, btnStopPump, btnReturn;
+
+
 	public PumpPanel(Font specifiedFont) {
-		
+
 		defaultFont = specifiedFont;
-		
+
+		//Init the drop down for member Status
+		//
+		memberStatusList = new JComboBox();
+		memberStatusModel = new DefaultComboBoxModel<String>(new String[]{"Member Status"});
+		memberStatusList.setFont(defaultFont);
+		memberStatusList.setModel(memberStatusModel);
+		memberStatusList.setEnabled(false);
+
 		//Init all JLabels
 		//
 		memberNumberLabel = new JLabel("Member Number:");
 		memberNumberLabel.setFont(defaultFont);
-		
+
 		nameLabel = new JLabel("Name");
 		nameLabel.setFont(defaultFont);
-		
+
 		addressLabel = new JLabel("Address");
 		addressLabel.setFont(defaultFont);
-		
+
 		cityLabel = new JLabel("City");
 		cityLabel.setFont(defaultFont);
-		
+
 		stateLabel = new JLabel("State");
 		stateLabel.setFont(defaultFont);
-		
+
 		zipLabel = new JLabel("Zip");
 		zipLabel.setFont(defaultFont);
-		
+
 		phoneLabel = new JLabel("Phone");
 		phoneLabel.setFont(defaultFont);
-		
+
 		emailLabel = new JLabel("Email");
 		emailLabel.setFont(defaultFont);
-		
+
 		memberSinceLabel = new JLabel("Member Since");
 		memberSinceLabel.setFont(defaultFont);
-		
+
 		gasPumpedLabel = new JLabel("Amount of gas pumped");
 		gasPumpedLabel.setFont(defaultFont);
-		
+
 		perGalLabel = new JLabel("Price per gallon");
 		perGalLabel.setFont(defaultFont);
-		
+
 		totalPriceLabel = new JLabel("Amount Due");
 		totalPriceLabel.setFont(defaultFont);
-		
-		
-		
+
+		memberStatusLabel = new JLabel("Member Status");
+		memberStatusLabel.setFont(defaultFont);
+
 		//Init all JTextFields
 		//
 		txtMemberNumber = new JTextField(20);
 		txtMemberNumber.setFont(defaultFont);
 		txtMemberNumber.setEnabled(false);
-		
+
 		txtFullName = new JTextField(20);
 		txtFullName.setFont(defaultFont);
 		txtFullName.setEnabled(false);
-		
+
 		txtAddress = new JTextField(20);
 		txtAddress.setFont(defaultFont);
 		txtAddress.setEnabled(false);
-		
+
 		txtCity = new JTextField(20);
 		txtCity.setFont(defaultFont);
 		txtCity.setEnabled(false);
-		
+
 		txtState = new JTextField(20);
 		txtState.setFont(defaultFont);
 		txtState.setEnabled(false);
-		
+
 		txtZip = new JTextField(20);
 		txtZip.setFont(defaultFont);
 		txtZip.setEnabled(false);
-		
+
 		txtPhone = new JTextField(20);
 		txtPhone.setFont(defaultFont);
 		txtPhone.setEnabled(false);
-		
+
 		txtEmail = new JTextField(20);
 		txtEmail.setFont(defaultFont);
 		txtEmail.setEnabled(false);
-		
+
 		txtMemberSince = new JTextField(20);
 		txtMemberSince.setFont(defaultFont);
 		txtMemberSince.setEnabled(false);
-		
+
 		txtGasPumped = new JTextField(20);
 		txtGasPumped.setFont(defaultFont);
 		txtGasPumped.setEnabled(false);
-		
+
 		txtPerGal = new JTextField(20);
 		txtPerGal.setFont(defaultFont);
 		txtPerGal.setEnabled(false);
-		
+
 		txtTotalPrice = new JTextField(20);
 		txtTotalPrice.setFont(defaultFont);
 		txtTotalPrice.setEnabled(false);
-		
+
 		txtMemberStatusField = new JTextField(20);
-		
-		
+
+
 		//Init main panel buttons
 		//
 		btnStartPump = new JButton("Start Pump");
@@ -142,21 +153,21 @@ public class PumpPanel extends JPanel {
 		btnStartPump.setFont(defaultFont);
 		btnStopPump.setFont(defaultFont);
 		btnReturn.setFont(defaultFont);
-		
-		
+
+
 		//Init all JPanels
 		//
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		JPanel bodyPanel = new JPanel(new GridLayout(2,1));
 		JPanel returnButtonPanel = new JPanel();
-		JPanel dataPanel = new JPanel(new GridLayout(12,2));
+		JPanel dataPanel = new JPanel(new GridLayout(13,2));
 		JPanel buttonPanel = new JPanel(new GridLayout(1,2));
 
-		
+
 		//Add all the components to the correct panels
 		//
 		returnButtonPanel.add(btnReturn);
-		
+
 		dataPanel.add(memberNumberLabel);
 		dataPanel.add(txtMemberNumber);
 		dataPanel.add(nameLabel);
@@ -175,57 +186,59 @@ public class PumpPanel extends JPanel {
 		dataPanel.add(txtEmail);
 		dataPanel.add(memberSinceLabel);
 		dataPanel.add(txtMemberSince);
+		dataPanel.add(memberStatusLabel);
+		dataPanel.add(memberStatusList);
 		dataPanel.add(gasPumpedLabel);
 		dataPanel.add(txtGasPumped);
 		dataPanel.add(perGalLabel);
 		dataPanel.add(txtPerGal);
 		dataPanel.add(totalPriceLabel);
 		dataPanel.add(txtTotalPrice);
-		
+
 		buttonPanel.add(btnStartPump);
 		buttonPanel.add(btnStopPump);
-		
-		
+
+
 		bodyPanel.add(dataPanel);
 		bodyPanel.add(buttonPanel);
-		
+
 		mainPanel.add(returnButtonPanel, BorderLayout.NORTH);
 		mainPanel.add(bodyPanel, BorderLayout.CENTER);
-		
+
 		add(mainPanel);
-		
-			
+
+
 	}
 
-	
+
 	public void returnActionListener(ActionListener ral){
 		btnReturn.addActionListener(ral);
 	}
-	
+
 	public void startActionListener(ActionListener sal){
 		btnStartPump.addActionListener(sal);
 	}
-	
+
 	public void stopActionListener(ActionListener sal){
 		btnStopPump.addActionListener(sal);
 	}
-	
+
 	public void setMemberNumber(String input){
 		txtMemberNumber.setText(input);
 	}
-	
+
 	public ClubMember getSelectedMember(){
 		return currentUser;
 	}
-	
+
 	public void setStatusField(String input){
 		txtMemberStatusField.setText(input);
 	}
-	
+
 	public void setNameField(String input){
 		txtFullName.setText(input);
 	}
-	
+
 	public void setAddressField(String input){
 		txtAddress.setText(input);
 	}
@@ -253,27 +266,47 @@ public class PumpPanel extends JPanel {
 	public void setMemberSinceField(String input){
 		txtMemberSince.setText(input);
 	}
-	
+
 	public void setPricePerGalField(String input){
 		txtPerGal.setText(input);
 	}
-	
+
 	public void setCurrentUser(ClubMember input){
 		currentUser = input;
 	}
-	
+
 	public void setGallonsPumped(String input){
 		txtGasPumped.setText(input);
 	}
-	
+
 	public void setTotalPrice(String input){
 		txtTotalPrice.setText(input);
 	}
-	
+
+	public void setMemberStatus(String[] input){
+		//dropDownList = input;
+		if(input.length > 1)
+			memberStatusList.setEnabled(true);
+		memberStatusModel.removeAllElements();
+		for(String name : input){
+			if(name.equals("Life Member"))
+				memberStatusModel.addElement("Club");
+			else
+				memberStatusModel.addElement(name);
+		}
+	}
+
+
+
+	public void setMemberStatus(String input){
+		memberStatusModel.removeAllElements();
+		memberStatusModel.addElement(input);
+	}
+
 	public void selectGuestMember(){
 		memberList.setSelectedIndex(1);
 	}
-	
+
 	public void resetMember(){
 		currentUser = new ClubMember();
 		txtMemberNumber.setText("");
