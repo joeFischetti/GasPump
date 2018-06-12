@@ -223,6 +223,10 @@ public class PumpPanel extends JPanel {
 		btnStopPump.addActionListener(sal);
 	}
 
+	public void statusActionListener(ActionListener sal){
+		memberStatusList.addActionListener(sal);
+	}
+
 	public void setMemberNumber(String input){
 		txtMemberNumber.setText(input);
 	}
