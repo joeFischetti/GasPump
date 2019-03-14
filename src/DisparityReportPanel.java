@@ -20,6 +20,9 @@ import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import java.text.MessageFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class DisparityReportPanel extends JPanel {
 	private static final long serialVersionUID = 005;
@@ -54,8 +57,23 @@ public class DisparityReportPanel extends JPanel {
 								"17", "18", "19", "20", "21", "22", "23",
 								"24", "25", "26", "27", "28", "29", "30", "31"};
 		
-		String[] years = new String[]{"ALL", "2016"};
-		
+	        //Get the current year:
+                Date today = new Date(); 
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(today);
+
+
+                int thisYear = cal.get(Calendar.YEAR);
+                int numYears = thisYear - 2016 + 2;
+                String[] years = new String[numYears];
+
+                years[0] = "ALL";
+
+                for(int i = 1, j = 2016; i < numYears; i++, j++){
+                        years[i] = Integer.toString(j);
+                }
+
+	
 		monthSelection = new JComboBox<String>(months);
 		monthSelection.setFont(defaultFont);
 		dateSelection = new JComboBox<String>(dates);

@@ -21,6 +21,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class AdminReportsPanel extends JPanel {
@@ -63,7 +65,24 @@ public class AdminReportsPanel extends JPanel {
 								"17", "18", "19", "20", "21", "22", "23",
 								"24", "25", "26", "27", "28", "29", "30", "31"};
 		
-		String[] years = new String[]{"ALL", "2016", "2017", "2018"};
+		
+		//Get the current year:
+		Date today = new Date(); // Fri Jun 17 14:54:28 PDT 2016
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(today); // don't forget this if date is arbitrary e.g. 01-01-2014
+
+
+		int thisYear = cal.get(Calendar.YEAR);
+		int numYears = thisYear - 2016 + 2;
+		String[] years = new String[numYears];
+
+		years[0] = "ALL";
+		
+		for(int i = 1, j = 2016; i < numYears; i++, j++){
+			years[i] = Integer.toString(j);
+		}
+
+		//String[] years = new String[]{"ALL", "2016", "2017", "2018"};
 		
 		monthSelection = new JComboBox<String>(months);
 		monthSelection.setFont(defaultFont);
